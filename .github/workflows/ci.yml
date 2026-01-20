@@ -270,3 +270,4 @@ jobs:
         prerelease: true
         title: "OpenAL Soft v${{needs.build.outputs.CommitTag}}-${{needs.build.outputs.CommitHashShort}}"
         files: "build/release/*"
+
