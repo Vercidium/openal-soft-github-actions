@@ -224,11 +224,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Download build artifacts
+    - name: Download Windows artifacts
       uses: actions/download-artifact@v4.1.7
       with:
         path: "build"
         pattern: "*-Win??-Release"
+        github-token: "${{secrets.GITHUB_TOKEN}}"
+
+    - name: Download Linux artifacts
+      uses: actions/download-artifact@v4.1.7
+      with:
+        path: "build"
+        pattern: "*-Linux-Release"
         github-token: "${{secrets.GITHUB_TOKEN}}"
 
     - name: Set up build folders
@@ -236,6 +243,7 @@ jobs:
         mkdir -p build/release/OpenALSoft/Documentation
         mkdir -p build/release/OpenALSoft/Win32
         mkdir -p build/release/OpenALSoft/Win64
+        mkdir -p build/release/OpenALSoft/Linux
         echo "${{github.repository}}" >>                                                                              "build/release/OpenALSoft/Documentation/Version.txt"
         echo "v${{needs.build.outputs.CommitTag}}-${{needs.build.outputs.CommitHashShort}} ${{github.ref_name}}" >>   "build/release/OpenALSoft/Documentation/Version.txt"
         echo "Commit #${{needs.build.outputs.CommitCount}}" >>                                                        "build/release/OpenALSoft/Documentation/Version.txt"
@@ -251,6 +259,7 @@ jobs:
         curl https://raw.githubusercontent.com/${{github.repository}}/${{github.ref_name}}/logging/log.cmd         -o "build/release/OpenALSoft/Win64/log.cmd"
         cp "build/soft_oal-Win32-Release/soft_oal.dll"                                                                "build/release/OpenALSoft/Win32/OpenAL32.dll"
         cp "build/soft_oal-Win64-Release/soft_oal.dll"                                                                "build/release/OpenALSoft/Win64/OpenAL32.dll"
+        cp build/soft_oal-Linux-Release/libopenal.so*                                                                 "build/release/OpenALSoft/Linux/"
         cp -r "build/release/OpenALSoft"                                                                              "build/release/OpenALSoft+HRTF"
         cp "build/release/OpenALSoft+HRTF/Win32/alsoft.ini"                                                           "build/release/OpenALSoft+HRTF/Documentation/alsoft.ini"
         curl https://raw.githubusercontent.com/${{github.repository}}/${{github.ref_name}}/configs/HRTF/alsoft.ini -o "build/release/OpenALSoft+HRTF/Win32/alsoft.ini"
